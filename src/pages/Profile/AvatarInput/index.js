@@ -13,15 +13,14 @@ export default function AvatarInput() {
   const ref = useRef();
 
   useEffect(() => {
-    console.tron.log(`ref.current ${ref.current.value}`);
-    // if (ref.current) {
-    //   registerField({
-    //     name: 'avatar_id',
-    //     ref: ref.current,
-    //     path: 'dataset.file',
-    //   });
-    // }
-  }, [ref, registerField]);
+    if (ref.current) {
+      registerField({
+        name: 'avatar_id',
+        ref: ref.current,
+        path: 'dataset.file',
+      });
+    }
+  }, [ref]);
 
   async function handleChange(e) {
     const data = new FormData();
@@ -31,8 +30,6 @@ export default function AvatarInput() {
     const response = await api.post('files', data);
 
     const { id, url } = response.data;
-
-    console.tron.log(`response avatar ${id}, ${url}`);
 
     setFile(id);
     setPreview(url);
