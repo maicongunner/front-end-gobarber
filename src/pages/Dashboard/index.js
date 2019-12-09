@@ -8,6 +8,7 @@ import {
   setSeconds,
   isBefore,
   isEqual,
+  startOfHour,
   parseISO,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -17,25 +18,7 @@ import api from '~/services/api';
 
 import { Container, Time } from './styles';
 
-const range = [
-  // 8,
-  // 9,
-  // 10,
-  // 11,
-  // 12,
-  // 13,
-  // 14,
-  // 15,
-  // 16,
-  // 17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-  24,
-];
+const range = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 export default function Dashboard() {
   const [schedule, setSchedule] = useState([]);
@@ -57,15 +40,17 @@ export default function Dashboard() {
       const data = range.map(hour => {
         const checkDate = setSeconds(setMinutes(setHours(date, hour), 0), 0);
         const compareDate = utcToZonedTime(checkDate, timezone);
+        const compareHour = startOfHour(compareDate);
 
         return {
           time: `${hour}:00h`,
           past: isBefore(compareDate, new Date()),
           appointment: response.data.find(a =>
-            isEqual(parseISO(a.date), compareDate)
+            isEqual(startOfHour(parseISO(a.date)), compareHour)
           ),
         };
       });
+
       setSchedule(data);
     }
 
